@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MediCare General Hospital</title>
+<title>Sita Superspeciality Hospital</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -172,8 +172,6 @@
   .card-icon { width: 52px; height: 52px; background: var(--teal-50); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 18px; }
   .card h3 { font-size: 1.05rem; font-weight: 500; color: var(--gray-900); margin-bottom: 10px; }
   .card p { font-size: 0.88rem; color: var(--gray-400); line-height: 1.6; }
-  .card-link { display: inline-flex; align-items: center; gap: 6px; color: var(--teal-400); font-size: 0.85rem; font-weight: 500; margin-top: 16px; text-decoration: none; }
-  .card-link:hover { color: var(--teal-600); }
 
   /* DOCTORS */
   .doctors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-top: 40px; }
@@ -183,10 +181,19 @@
   }
   .doctor-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
   .doctor-avatar {
-    width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    width: 100%; aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
     font-family: var(--font-heading); font-size: 2.4rem; font-weight: 700;
-    background: var(--teal-50); color: var(--teal-600); position: relative;
+    overflow: hidden; position: relative;
   }
+  /* Image fills the square; if it loads, it sits on top of the initials */
+  .doctor-avatar img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    display: block; z-index: 1;
+  }
+  /* Initials sit behind the image; visible only when image fails or is absent */
+  .doctor-avatar .initials { position: relative; z-index: 0; }
   .doctor-info { padding: 20px 16px; }
   .doctor-info h3 { font-size: 1rem; font-weight: 500; color: var(--gray-900); margin-bottom: 4px; }
   .doctor-specialty { font-size: 0.82rem; color: var(--teal-600); font-weight: 500; margin-bottom: 8px; }
@@ -256,87 +263,10 @@
   .footer-col ul li a:hover { color: var(--teal-100); }
   .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; }
 
-  /* CHATBOT */
-  #chatbot-btn {
-    position: fixed; bottom: 28px; right: 28px; z-index: 2000;
-    width: 60px; height: 60px; background: var(--teal-400); border-radius: 50%;
-    border: none; cursor: pointer; box-shadow: var(--shadow-lg);
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.3s; color: white;
-  }
-  #chatbot-btn:hover { background: var(--teal-600); transform: scale(1.08); }
-  #chatbot-btn svg { width: 26px; height: 26px; }
-  #chatbot-window {
-    position: fixed; bottom: 100px; right: 28px; z-index: 1999;
-    width: 370px; background: white; border-radius: var(--radius-xl);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.18); display: none;
-    flex-direction: column; overflow: hidden;
-    border: 1px solid var(--gray-100); max-height: 560px;
-    animation: slideUp 0.3s ease;
-  }
-  #chatbot-window.open { display: flex; }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-  .chat-header {
-    background: var(--teal-400); color: white; padding: 18px 20px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .chat-avatar {
-    width: 38px; height: 38px; background: rgba(255,255,255,0.2);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem;
-  }
-  .chat-header-info strong { display: block; font-size: 0.95rem; }
-  .chat-header-info span { font-size: 0.78rem; opacity: 0.85; display: flex; align-items: center; gap: 6px; }
-  .chat-header-info span::before { content: ''; width: 7px; height: 7px; background: #80E8B6; border-radius: 50%; display: inline-block; }
-  .chat-close { margin-left: auto; background: none; border: none; color: white; cursor: pointer; opacity: 0.8; transition: opacity 0.2s; font-size: 1.2rem; }
-  .chat-close:hover { opacity: 1; }
-  .chat-messages {
-    flex: 1; overflow-y: auto; padding: 20px 16px;
-    display: flex; flex-direction: column; gap: 14px; background: var(--gray-50);
-  }
-  .msg { display: flex; gap: 10px; max-width: 100%; }
-  .msg.user { flex-direction: row-reverse; }
-  .msg-bubble {
-    max-width: 80%; padding: 11px 15px; border-radius: 18px;
-    font-size: 0.88rem; line-height: 1.55;
-  }
-  .msg.bot .msg-bubble { background: white; color: var(--gray-900); border: 1px solid var(--gray-100); border-bottom-left-radius: 4px; }
-  .msg.user .msg-bubble { background: var(--teal-400); color: white; border-bottom-right-radius: 4px; }
-  .msg-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--teal-100); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--teal-700); flex-shrink: 0; align-self: flex-end; }
-  .typing { display: flex; gap: 5px; align-items: center; padding: 4px 2px; }
-  .typing span { width: 7px; height: 7px; background: var(--gray-200); border-radius: 50%; animation: bounce 1.2s infinite; }
-  .typing span:nth-child(2) { animation-delay: 0.2s; }
-  .typing span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-7px); } }
-  .chat-quick { padding: 12px 16px; border-top: 1px solid var(--gray-100); display: flex; gap: 8px; overflow-x: auto; background: white; }
-  .quick-chip {
-    background: var(--teal-50); color: var(--teal-600); border: 1px solid var(--teal-100);
-    padding: 6px 13px; border-radius: 100px; font-size: 0.78rem; white-space: nowrap;
-    cursor: pointer; transition: all 0.2s; flex-shrink: 0;
-  }
-  .quick-chip:hover { background: var(--teal-100); }
-  .chat-input-area {
-    padding: 14px 16px; border-top: 1px solid var(--gray-100);
-    display: flex; gap: 10px; background: white; align-items: center;
-  }
-  .chat-input-area input {
-    flex: 1; border: 1.5px solid var(--gray-200); border-radius: 100px;
-    padding: 10px 16px; font-family: var(--font-body); font-size: 0.88rem;
-    outline: none; transition: border-color 0.2s;
-  }
-  .chat-input-area input:focus { border-color: var(--teal-400); }
-  .chat-send {
-    width: 38px; height: 38px; background: var(--teal-400); border: none;
-    border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s; flex-shrink: 0; color: white;
-  }
-  .chat-send:hover { background: var(--teal-600); }
-  .chat-send svg { width: 16px; height: 16px; }
-
   /* UTILITY */
   .alt-bg { background: var(--gray-50); }
   .text-center { text-align: center; }
   .text-center .section-sub { margin: 0 auto; }
-  .teal-accent { color: var(--teal-400); }
 
   @media (max-width: 768px) {
     .nav-links { display: none; flex-direction: column; position: fixed; top: 72px; left: 0; right: 0; background: white; padding: 20px; border-bottom: 1px solid var(--gray-100); gap: 4px; box-shadow: var(--shadow-md); }
@@ -346,8 +276,6 @@
     .hero-stats { grid-template-columns: repeat(3, 1fr); }
     .about-grid, .contact-grid { grid-template-columns: 1fr; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
-    .form-grid { grid-template-columns: 1fr; }
-    #chatbot-window { width: calc(100vw - 32px); right: 16px; bottom: 90px; }
   }
 </style>
 </head>
@@ -379,7 +307,7 @@
       <div>
         <div class="hero-badge">🏥 Accredited Since 1985</div>
         <h1>Healthcare with <em>Compassion</em> & Precision</h1>
-        <p>MediCare General Hospital provides world-class medical care with a team of 200+ specialists across 30 departments — serving our community for over 35 years.</p>
+        <p>Sita Superspeciality Hospital provides world-class medical care with a team of 200+ specialists across 30 departments — serving our community for over 35 years.</p>
         <div class="hero-actions">
           <a href="#" class="btn-primary" onclick="showPage('services')">Explore Services →</a>
           <a href="#" class="btn-outline" onclick="showPage('doctors')">Meet Our Doctors</a>
@@ -401,9 +329,9 @@
             <div class="quick-link-icon" style="background:rgba(255,255,255,0.15)">👨‍⚕️</div>
             <div class="quick-link-text"><strong>Find a Doctor</strong><span>Browse our specialists</span></div>
           </a>
-          <a href="#" class="quick-link-item" onclick="openChat()">
-            <div class="quick-link-icon" style="background:rgba(255,255,255,0.15)">💬</div>
-            <div class="quick-link-text"><strong>Chat with AI Assistant</strong><span>Get instant answers</span></div>
+          <a href="#" class="quick-link-item" onclick="showPage('contact')">
+            <div class="quick-link-icon" style="background:rgba(255,255,255,0.15)">📞</div>
+            <div class="quick-link-text"><strong>Contact Us</strong><span>Get in touch with our team</span></div>
           </a>
         </div>
       </div>
@@ -433,7 +361,7 @@
         <div>
           <div class="section-tag">Our Story</div>
           <h2 class="section-heading">Healing Lives Since 1985</h2>
-          <p style="color:var(--gray-400);line-height:1.7;margin-bottom:20px">MediCare General Hospital was founded with a single mission: to provide accessible, high-quality healthcare to every member of our community — regardless of background or circumstance.</p>
+          <p style="color:var(--gray-400);line-height:1.7;margin-bottom:20px">Sita Superspeciality Hospital was founded with a single mission: to provide accessible, high-quality healthcare to every member of our community — regardless of background or circumstance.</p>
           <p style="color:var(--gray-400);line-height:1.7">Today, we stand as the region's premier medical institution, with cutting-edge facilities, a distinguished medical faculty, and an unwavering commitment to clinical excellence.</p>
           <ul class="values-list">
             <li><span class="val-dot"></span>Accredited by the Joint Commission on Medical Excellence</li>
@@ -452,9 +380,9 @@
       <div class="section-tag">Milestones</div>
       <h2 class="section-heading">Our Journey</h2>
       <div class="timeline">
-        <div class="tl-item"><div class="tl-year">1985</div><h4>Founded</h4><p>MediCare General opened its doors with 50 beds and a team of 30 dedicated medical professionals.</p></div>
+        <div class="tl-item"><div class="tl-year">1985</div><h4>Founded</h4><p>Sita Superspeciality Hospital opened its doors with 50 beds and a team of 30 dedicated medical professionals.</p></div>
         <div class="tl-item"><div class="tl-year">1998</div><h4>First Cardiac Center</h4><p>Launched the region's first dedicated cardiac surgery center, performing over 500 open-heart procedures in its inaugural year.</p></div>
-        <div class="tl-item"><div class="tl-year">2007</div><h4>Research Institute</h4><p>Established the MediCare Research Institute, now leading clinical trials in oncology and neurology.</p></div>
+        <div class="tl-item"><div class="tl-year">2007</div><h4>Research Institute</h4><p>Established our Research Institute, now leading clinical trials in oncology and neurology.</p></div>
         <div class="tl-item"><div class="tl-year">2015</div><h4>Expansion</h4><p>Completed a major campus expansion, doubling capacity to 600 beds and adding 12 new specialty departments.</p></div>
         <div class="tl-item"><div class="tl-year">2023</div><h4>Digital Health Hub</h4><p>Launched our AI-assisted diagnostics program and telemedicine platform, serving patients nationwide.</p></div>
       </div>
@@ -469,7 +397,7 @@
       <div class="section-tag">Departments</div>
       <h2 class="section-heading">Our Medical Services</h2>
       <p class="section-sub">Comprehensive care across 30 specialties — from primary care to complex surgical interventions.</p>
-        <div class="cards-grid" style="margin-top:40px">
+      <div class="cards-grid" style="margin-top:40px">
         <div class="card"><div class="card-icon">❤️</div><h3>Cardiology</h3><p>Advanced heart care including interventional cardiology, electrophysiology, and heart failure management.</p></div>
         <div class="card"><div class="card-icon">🧠</div><h3>Neurology</h3><p>Expert diagnosis and treatment of neurological conditions including stroke, epilepsy, and Parkinson's disease.</p></div>
         <div class="card"><div class="card-icon">🦴</div><h3>Orthopedics</h3><p>Comprehensive bone, joint, and spine care — from sports injuries to complex reconstructive surgery.</p></div>
@@ -484,6 +412,12 @@
 </div>
 
 <!-- DOCTORS PAGE -->
+<!--
+  HOW TO ADD DOCTOR IMAGES:
+  1. Upload your photo files to the /images/ folder in your GitHub repo
+  2. Name them exactly as shown in each src="images/..." below
+  3. The colored initials show automatically if an image is missing or hasn't loaded yet
+-->
 <div class="page" id="page-doctors">
   <section style="padding-top:100px">
     <div class="section-inner text-center">
@@ -491,8 +425,12 @@
       <h2 class="section-heading">Meet Our Specialists</h2>
       <p class="section-sub">Our 200+ physicians bring world-class expertise and genuine compassion to every patient encounter.</p>
       <div class="doctors-grid" style="margin-top:40px">
+
         <div class="doctor-card">
-          <div class="doctor-avatar">SA</div>
+          <div class="doctor-avatar" style="background:var(--teal-50);color:var(--teal-600)">
+            <img src="images/dr-sarah-ahmed.jpg" alt="Dr. Sarah Ahmed" onerror="this.style.display='none'">
+            <span class="initials">SA</span>
+          </div>
           <div class="doctor-info">
             <h3>Dr. Sarah Ahmed</h3>
             <div class="doctor-specialty">Chief of Cardiology</div>
@@ -500,8 +438,12 @@
             <span class="doctor-badge">MBBS, MD, FACC</span>
           </div>
         </div>
+
         <div class="doctor-card">
-          <div class="doctor-avatar" style="background:var(--teal-100);color:var(--teal-800)">MK</div>
+          <div class="doctor-avatar" style="background:var(--teal-100);color:var(--teal-800)">
+            <img src="images/dr-michael-kim.jpg" alt="Dr. Michael Kim" onerror="this.style.display='none'">
+            <span class="initials">MK</span>
+          </div>
           <div class="doctor-info">
             <h3>Dr. Michael Kim</h3>
             <div class="doctor-specialty">Neurology</div>
@@ -509,8 +451,12 @@
             <span class="doctor-badge">MD, PhD</span>
           </div>
         </div>
+
         <div class="doctor-card">
-          <div class="doctor-avatar" style="background:#FEF3E2;color:#92540a">PR</div>
+          <div class="doctor-avatar" style="background:#FEF3E2;color:#92540a">
+            <img src="images/dr-priya-rao.jpg" alt="Dr. Priya Rao" onerror="this.style.display='none'">
+            <span class="initials">PR</span>
+          </div>
           <div class="doctor-info">
             <h3>Dr. Priya Rao</h3>
             <div class="doctor-specialty">Oncology</div>
@@ -518,8 +464,12 @@
             <span class="doctor-badge">MD, DM</span>
           </div>
         </div>
+
         <div class="doctor-card">
-          <div class="doctor-avatar" style="background:#EDE9FE;color:#5b21b6">JL</div>
+          <div class="doctor-avatar" style="background:#EDE9FE;color:#5b21b6">
+            <img src="images/dr-james-liu.jpg" alt="Dr. James Liu" onerror="this.style.display='none'">
+            <span class="initials">JL</span>
+          </div>
           <div class="doctor-info">
             <h3>Dr. James Liu</h3>
             <div class="doctor-specialty">Orthopedic Surgery</div>
@@ -527,8 +477,12 @@
             <span class="doctor-badge">MS Ortho, FRCS</span>
           </div>
         </div>
+
         <div class="doctor-card">
-          <div class="doctor-avatar" style="background:#FCE7F3;color:#831843">EM</div>
+          <div class="doctor-avatar" style="background:#FCE7F3;color:#831843">
+            <img src="images/dr-elena-markov.jpg" alt="Dr. Elena Markov" onerror="this.style.display='none'">
+            <span class="initials">EM</span>
+          </div>
           <div class="doctor-info">
             <h3>Dr. Elena Markov</h3>
             <div class="doctor-specialty">Obstetrics & Gynecology</div>
@@ -536,8 +490,12 @@
             <span class="doctor-badge">MBBS, MS</span>
           </div>
         </div>
+
         <div class="doctor-card">
-          <div class="doctor-avatar" style="background:#DCFCE7;color:#166534">RN</div>
+          <div class="doctor-avatar" style="background:#DCFCE7;color:#166534">
+            <img src="images/dr-raj-nair.jpg" alt="Dr. Raj Nair" onerror="this.style.display='none'">
+            <span class="initials">RN</span>
+          </div>
           <div class="doctor-info">
             <h3>Dr. Raj Nair</h3>
             <div class="doctor-specialty">Pediatrics</div>
@@ -545,8 +503,12 @@
             <span class="doctor-badge">MD, DCH</span>
           </div>
         </div>
+
         <div class="doctor-card">
-          <div class="doctor-avatar" style="background:#E0F2FE;color:#0c4a6e">AC</div>
+          <div class="doctor-avatar" style="background:#E0F2FE;color:#0c4a6e">
+            <img src="images/dr-amina-chaudhry.jpg" alt="Dr. Amina Chaudhry" onerror="this.style.display='none'">
+            <span class="initials">AC</span>
+          </div>
           <div class="doctor-info">
             <h3>Dr. Amina Chaudhry</h3>
             <div class="doctor-specialty">Pulmonology</div>
@@ -554,8 +516,12 @@
             <span class="doctor-badge">MD, DM</span>
           </div>
         </div>
+
         <div class="doctor-card">
-          <div class="doctor-avatar" style="background:#FEF9C3;color:#713f12">TW</div>
+          <div class="doctor-avatar" style="background:#FEF9C3;color:#713f12">
+            <img src="images/dr-thomas-ward.jpg" alt="Dr. Thomas Ward" onerror="this.style.display='none'">
+            <span class="initials">TW</span>
+          </div>
           <div class="doctor-info">
             <h3>Dr. Thomas Ward</h3>
             <div class="doctor-specialty">Ophthalmology</div>
@@ -563,6 +529,7 @@
             <span class="doctor-badge">MBBS, MS Ophth</span>
           </div>
         </div>
+
       </div>
     </div>
   </section>
@@ -588,7 +555,7 @@
         <div>
           <div class="contact-card"><h3>Address</h3><p>123 Healthcare Boulevard<br>Medical District, City 10001</p></div>
           <div class="contact-card"><h3>Phone</h3><p>Main: (555) 200-3000<br>Emergency: (555) 911-0000</p></div>
-          <div class="contact-card"><h3>Email</h3><p>info@medicaregeneral.org<br>appointments@medicaregeneral.org</p></div>
+          <div class="contact-card"><h3>Email</h3><p>info@sitahospital.org<br>appointments@sitahospital.org</p></div>
           <div class="contact-card"><h3>Hours</h3><p>Mon – Fri: 7:00 AM – 8:00 PM<br>Sat – Sun: 8:00 AM – 5:00 PM<br>Emergency: 24/7</p></div>
         </div>
         <div>
@@ -638,7 +605,7 @@
   <div class="footer-inner">
     <div class="footer-grid">
       <div class="footer-brand">
-        <h3>MediCare General Hospital</h3>
+        <h3>Sita Superspeciality Hospital</h3>
         <p>Delivering compassionate, world-class healthcare to our community since 1985. Your health is our mission.</p>
       </div>
       <div class="footer-col">
@@ -666,59 +633,20 @@
         <h4>Contact</h4>
         <ul>
           <li><a href="#">(555) 200-3000</a></li>
-          <li><a href="#">info@medicaregeneral.org</a></li>
+          <li><a href="#">info@sitahospital.org</a></li>
           <li><a href="#" onclick="showPage('contact')">Find Us</a></li>
           <li><a href="#" onclick="showPage('emergency')" style="color:#f87171">Emergency: (555) 911-0000</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2025 MediCare General Hospital. All rights reserved.</span>
+      <span>© 2025 Sita Superspeciality Hospital. All rights reserved.</span>
       <span>Privacy Policy · Terms of Service</span>
     </div>
   </div>
 </footer>
 
-<!-- CHATBOT -->
-<button id="chatbot-btn" onclick="toggleChat()" title="Chat with our AI Assistant">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-  </svg>
-</button>
-
-<div id="chatbot-window">
-  <div class="chat-header">
-    <div class="chat-avatar">🏥</div>
-    <div class="chat-header-info">
-      <strong>MediCare Assistant</strong>
-      <span>Online · AI-powered support</span>
-    </div>
-    <button class="chat-close" onclick="toggleChat()">✕</button>
-  </div>
-  <div class="chat-messages" id="chatMessages">
-    <div class="msg bot">
-      <div class="msg-avatar">🤖</div>
-      <div class="msg-bubble">Hello! I'm the MediCare General AI Assistant. I can help you with appointment info, department details, visiting hours, and general health questions. How can I help you today?</div>
-    </div>
-  </div>
-  <div class="chat-quick" id="quickChips">
-    <div class="quick-chip" onclick="sendQuick('What are your visiting hours?')">Visiting hours</div>
-    <div class="quick-chip" onclick="sendQuick('How do I book an appointment?')">Book appointment</div>
-    <div class="quick-chip" onclick="sendQuick('What departments do you have?')">Departments</div>
-    <div class="quick-chip" onclick="sendQuick('Where is the hospital located?')">Location</div>
-  </div>
-  <div class="chat-input-area">
-    <input type="text" id="chatInput" placeholder="Type your message..." onkeydown="if(event.key==='Enter')sendMessage()">
-    <button class="chat-send" onclick="sendMessage()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-      </svg>
-    </button>
-  </div>
-</div>
-
 <script>
-// Page navigation
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
@@ -726,108 +654,12 @@ function showPage(id) {
   const navEl = document.getElementById('nav-' + id);
   if (navEl) navEl.classList.add('active');
   window.scrollTo(0, 0);
-  const navLinks = document.getElementById('navLinks');
-  navLinks.classList.remove('open');
+  document.getElementById('navLinks').classList.remove('open');
   return false;
 }
 
 function toggleMenu() {
   document.getElementById('navLinks').classList.toggle('open');
-}
-
-// Chatbot
-let isOpen = false;
-const SYSTEM_PROMPT = `You are the friendly AI assistant for MediCare General Hospital, a leading medical institution. You help patients with:
-- General hospital information (visiting hours: Mon-Fri 7am-8pm, Sat-Sun 8am-5pm; Emergency 24/7)
-- Location: 123 Healthcare Boulevard, Medical District, City 10001
-- Phone: Main (555) 200-3000, Emergency (555) 911-0000
-- Departments: Cardiology, Neurology, Orthopedics, Oncology, OB/GYN, Pediatrics, Pulmonology, Ophthalmology
-- Appointment booking: currently call (555) 200-3000 to schedule — online booking coming soon
-- General health information and when to seek emergency care
-
-Keep responses friendly, concise (2-4 sentences max), and always recommend consulting a doctor for specific medical advice. Never diagnose conditions. If someone describes an emergency, direct them to call (555) 911-0000 immediately.`;
-
-function toggleChat() {
-  const win = document.getElementById('chatbot-window');
-  isOpen = !isOpen;
-  if (isOpen) win.classList.add('open');
-  else win.classList.remove('open');
-}
-
-function openChat() {
-  const win = document.getElementById('chatbot-window');
-  isOpen = true;
-  win.classList.add('open');
-}
-
-function sendQuick(text) {
-  document.getElementById('chatInput').value = text;
-  sendMessage();
-}
-
-let chatHistory = [];
-
-async function sendMessage() {
-  const input = document.getElementById('chatInput');
-  const msg = input.value.trim();
-  if (!msg) return;
-  input.value = '';
-
-  addMessage('user', msg);
-  chatHistory.push({ role: 'user', content: msg });
-
-  // Typing indicator
-  const typingId = addTyping();
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 300,
-        system: SYSTEM_PROMPT,
-        messages: chatHistory
-      })
-    });
-    const data = await res.json();
-    const reply = data.content && data.content[0] ? data.content[0].text : "I'm having trouble connecting right now. Please call us at (555) 200-3000 for assistance.";
-    removeTyping(typingId);
-    addMessage('bot', reply);
-    chatHistory.push({ role: 'assistant', content: reply });
-  } catch (e) {
-    removeTyping(typingId);
-    addMessage('bot', "I'm having trouble connecting. Please call us at (555) 200-3000 for immediate assistance.");
-  }
-}
-
-function addMessage(role, text) {
-  const msgs = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.className = 'msg ' + role;
-  div.innerHTML = `
-    ${role === 'bot' ? '<div class="msg-avatar">🤖</div>' : ''}
-    <div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>
-    ${role === 'user' ? '<div class="msg-avatar" style="background:var(--teal-50);color:var(--teal-600)">You</div>' : ''}
-  `;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function addTyping() {
-  const msgs = document.getElementById('chatMessages');
-  const id = 'typing-' + Date.now();
-  const div = document.createElement('div');
-  div.className = 'msg bot'; div.id = id;
-  div.innerHTML = `<div class="msg-avatar">🤖</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-  return id;
-}
-
-function removeTyping(id) {
-  const el = document.getElementById(id);
-  if (el) el.remove();
 }
 </script>
 </body>
